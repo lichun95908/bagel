@@ -1,149 +1,226 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-   我是吳嘉祥，hello 
-</body>
-</html>
-
-<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>履歷範本</title>
+    <title>Document</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
+            display: flex;
         }
+        
+        /* 左側導航欄 */
+        .sidebar {
+            width: 200px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #ecf0f1;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .sidebar ul li {
+            margin-bottom: 15px;
+        }
+        
+        .sidebar ul li a {
+            color: #ecf0f1;
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar ul li a:hover {
+            background-color: #34495e;
+        }
+        
+        /* 主內容區 */
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+            flex: 1;
+        }
+        
         .container {
-            width: 40%;
+            width: 90%;
+            max-width: 800px;
             margin: auto;
             padding: 10px;
             border: 4px solid #000000;
-            border-radius: 8px;}
+            border-radius: 8px;
+        }
+        
         h1 {
             text-align: center;
             color: #000000;
         }
+        
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
+        
         table th, table td {
             padding: 12px;
             text-align: left;
             border: 1px solid #000000;
         }
+        
         table th {
             background-color: #637ffafd;
         }
+        
         .section-title {
             font-weight: bold;
             color: #000000;
+        }
+        
+        /* 錨點區塊增加一些間距 */
+        .anchor-section {
+            scroll-margin-top: 20px;
+        }
+        
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>履歷表</h1>
-    
-    <table>
-        <!-- Contact Info -->
-        <tr>
-            <th colspan="3" class="section-title">聯絡資訊</th>
-        </tr>
-        <tr>
-            <th>姓名</th>
-            <td>吳嘉祥</td>
-            <td rowspan="5" style="width:140px; text-align:center; vertical-align:middle;">
-        <img src="網頁用大頭貼 我還沒上車.jpg" alt="大頭貼" style="width:160px; height:auto; ">
-    </td>
-        </tr>
-        <tr>
-            <th>學號</th>
-            <td>3311431035</td>
-        </tr>
-        <tr>
-            <th>電話</th>
-            <td>0970-xxx145</td>
-        </tr>
-        <tr>
-            <th>電子郵件</th>
-            <td>ABC@mail.com</td>
-        </tr>
-        <tr>
-            <th>地址</th>
-            <td>台中市大里區</td>
-        </tr>
+<!-- 左側導航欄 -->
+<div class="sidebar">
+    <h2>📋 目錄</h2>
+    <ul>
+        <li><a href="#contact">📞 聯絡資訊</a></li>
+        <li><a href="#education">🎓 學歷</a></li>
+        <li><a href="#experience">💼 工作經歷</a></li>
+        <li><a href="#skills">🔧 技能</a></li>
+    </ul>
+</div>
 
-        <!-- Education -->
-        <tr>
-            <th colspan="3" class="section-title">學歷</th>
-        </tr>
-        <tr>
-            <th>學校</th>
-            <td colspan="2">國立台中科技大學</td>
-        </tr>
-        <tr>
-            <th>科系</th>
-            <td colspan="2">資訊管理學系</td>
-        </tr>
-        <tr>
-            <th>學位</th>
-            <td colspan="2">學士</td>
-        </tr>
-        <tr>
-            <th>畢業年份</th>
-            <td colspan="2">2027</td>
-        </tr>
+<!-- 主內容區 -->
+<div class="main-content">
+    <div class="container">
+        <h1>履歷表</h1>
+        
+        <table>
+            <!-- Contact Info -->
+            <tr id="contact" class="anchor-section">
+                <th colspan="3" class="section-title">聯絡資訊</th>
+            </tr>
+            <tr>
+                <th>姓名</th>
+                <td>吳嘉祥</td>
+                <td rowspan="5" style="width:140px; text-align:center; vertical-align:middle;">
+                    <img src="網頁用大頭貼 我還沒上車.jpg" alt="大頭貼" style="width:160px; height:auto;">
+                </td>
+            </tr>
+            <tr>
+                <th>學號</th>
+                <td>3311431035</td>
+            </tr>
+            <tr>
+                <th>電話</th>
+                <td>0970-xxx145</td>
+            </tr>
+            <tr>
+                <th>電子郵件</th>
+                <td>ABC@mail.com</td>
+            </tr>
+            <tr>
+                <th>地址</th>
+                <td>台中市大里區</td>
+            </tr>
 
-        <!-- Work Experience -->
-        <tr>
-            <th colspan="3" class="section-title">工作經歷</th>
-        </tr>
-        <tr>
-            <th>公司名稱</th>
-            <td colspan="2">XXX公司</td>
-        </tr>
-        <tr>
-            <th>職位</th>
-            <td colspan="2">XX職位</td>
-        </tr>
-        <tr>
-            <th>工作期間</th>
-            <td colspan="2">2021-現在</td>
-        </tr>
-        <tr>
-            <th>工作內容</th>
-            <td colspan="2">負責XXXXXXXX</td>
-        </tr>
+            <!-- Education -->
+            <tr id="education" class="anchor-section">
+                <th colspan="3" class="section-title">學歷</th>
+            </tr>
+            <tr>
+                <th>學校</th>
+                <td colspan="2">國立台中科技大學</td>
+            </tr>
+            <tr>
+                <th>科系</th>
+                <td colspan="2">資訊管理學系</td>
+            </tr>
+            <tr>
+                <th>學位</th>
+                <td colspan="2">學士</td>
+            </tr>
+            <tr>
+                <th>畢業年份</th>
+                <td colspan="2">2027</td>
+            </tr>
 
-        <!-- Skills -->
-        <tr>
-            <th colspan="3" class="section-title">技能</th>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <ul>
-                    <li>程式語言: Python, Java, JavaScript</li>
-                    <li>資料庫: MySQL, PostgreSQL</li>
-                    <li>前端框架: React, Vue.js</li>
-                </ul>
-            </td>
-            <td><div class="footer-link">
-                   <p><a href="https://www.example.com" target="_blank">點此連結至我的其他作品</a></p>
-                </div>
-            </td>
-        </tr>
-    </table>
+            <!-- Work Experience -->
+            <tr id="experience" class="anchor-section">
+                <th colspan="3" class="section-title">工作經歷</th>
+            </tr>
+            <tr>
+                <th>公司名稱</th>
+                <td colspan="2">XXX公司</td>
+            </tr>
+            <tr>
+                <th>職位</th>
+                <td colspan="2">XX職位</td>
+            </tr>
+            <tr>
+                <th>工作期間</th>
+                <td colspan="2">2021-現在</td>
+            </tr>
+            <tr>
+                <th>工作內容</th>
+                <td colspan="2">負責XXXXXXXX</td>
+            </tr>
+
+            <!-- Skills -->
+            <tr id="skills" class="anchor-section">
+                <th colspan="3" class="section-title">技能</th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <ul>
+                        <li>程式語言: Python, Java, JavaScript</li>
+                        <li>資料庫: MySQL, PostgreSQL</li>
+                        <li>前端框架: React, Vue.js</li>
+                    </ul>
+                </td>
+                <td>
+                    <div class="footer-link">
+                        <p><a href="https://www.example.com" target="_blank">點此連結至我的其他作品</a></p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>
 
 </body>
