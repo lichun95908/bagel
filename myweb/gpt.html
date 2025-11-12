@@ -1,80 +1,209 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>利用ChatGPT製作網頁的十個秘笈</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "Microsoft JhengHei", Arial, sans-serif;
-      background-color: #2b8cbf;
-      color: white;
-      text-align: center;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>嘉祥bagel的網頁</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #91045b;
+            color: rgb(0, 255, 255);
+        }
 
-    h1 {
-      margin-top: 50px;
-      font-size: 2em;
-      font-weight: bold;
-    }
+        /* 🔸 頂部導覽列樣式 */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #2c3e50;
+            padding: 10px 20px;
+            color: white;
+            flex-wrap: wrap;
+        }
 
-    p {
-      font-size: 1em;
-      margin-bottom: 40px;
-    }
+        .navbar .nav-left {
+            display: flex;
+            justify-content: space-between;  /* ✅ 按鈕之間平均分散 */
+            align-items: center;
+            width: 100%;                     /* ✅ 讓分散效果生效 */
+            max-width: 700px;                /* ✅ 可自行調整整體寬度 */
+            gap: 15px;
+        }
 
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      justify-items: center;
-      max-width: 900px;
-      margin: 0 auto;
-    }
+         /* 🔹 導覽列按鈕樣式 */
+        .nav-link,
+        .dropdown-btn {
+            background-color: #34495e;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            display: inline-flex;       /* 改成 inline-flex */
+            align-items: center;
+            justify-content: center;
+            width: 140px;               /* ✅ 統一寬度 */
+            box-sizing: border-box;     /* 包含 padding 在寬度內 */
+        }
 
-    a {
-      text-decoration: none;
-      width: 200px;
-    }
+        .nav-link:hover,
+        .dropdown-btn:hover {
+            background-color: #3f7a47;
+         }
 
-    .btn {
-      background-color: transparent;
-      border: 2px solid #fff;
-      color: #fff;
-      padding: 15px 20px;
-      font-size: 1em;
-      border-radius: 10px;
-      cursor: pointer;
-      display: block;
-      width: 100%;
-      transition: all 0.3s ease;
-    }
+        /* 🔸 下拉選單樣式 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
 
-    .btn:hover {
-      background-color: #fff;
-      color: #0983c9;
-      transform: scale(1.05);
-    }
-  </style>
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 45px;
+            left: 0;
+            background-color: #2c3e50;
+            min-width: 140px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            width: 100px;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #34495e;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        /* 🔹 修改結束 */
+
+        /* 主內容區 */
+         .main-content {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .main-content h1 {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .main-content p {
+            font-size: 1em;
+            margin-bottom: 40px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns:1fr;   
+            align-items: center;             /* 水平置中 */
+            gap: 15px;
+            justify-items: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        a {
+            text-decoration: none;
+            width: 700px;
+        }
+
+        .btn {
+            width: 700px;        /* 填滿 a 標籤 */
+            max-width: 700px;   /* 限制按鈕最大寬度 */
+            padding: 12px 0;     /* 上下內距小，左右不額外增加寬度 */
+            white-space: nowrap;         /* 文字不換行 */
+            overflow: hidden;            /* 防止超出 */
+            border-radius: 5px;
+            border: 2px solid #44eb11;
+            color: #7bff00;
+            background-color: transparent;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #fff;
+            color: #0983c9;
+            transform: scale(1.05);
+        }
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            /* 🔸 修改：頂部導覽列響應式處理 */
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .dropdown-content {
+                position: relative;
+                top: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>利用ChatGPT製作網頁的十個秘笈</h1>
-  <p>點擊下方任一項，進入秘笈詳解 👇</p>
 
-  <div class="nav-link">
-    <a href="tip1.html"><div class="btn">語意化 HTML</div></a>
-    <a href="tip2.html"><div class="btn">CSS Grid 與 Flexbox</div></a>
-    <a href="tip3.html"><div class="btn">響應式設計</div></a>
-    <a href="tip4.html"><div class="btn">可及性設計</div></a>
-    <a href="tip5.html"><div class="btn">表單與驗證</div></a>
-    <a href="tip6.html"><div class="btn">影像與媒體優化</div></a>
-    <a href="tip7.html"><div class="btn">JavaScript 模組化</div></a>
-    <a href="tip8.html"><div class="btn">使用者體驗</div></a>
-    <a href="tip9.html"><div class="btn">性能優化</div></a>
-    <a href="tip10.html"><div class="btn">前端自動化</div></a>
-    <a href="index.html"><div class="btn">回首頁</div></a>
-  </div>
+<!-- 🔸 上方導覽列 -->
+<div class="navbar">
+    <div class="nav-left">
+       <a href="index.html" class="nav-link">📰 首頁</a>
+       <a href="wu_resume.html" class="nav-link">📋 履歷表</a>
+      
+        <div class="dropdown">
+        <button class="dropdown-btn">🌐 關於我 ▾</button>
+         <div class="dropdown-content">
+                <a href="#contact">自傳</a>
+                <a href="#education">愛車照</a>
+            </div> 
+        </div> 
+
+        <div class="dropdown">
+        <button class="dropdown-btn">📁 AI詢問集 ▾</button>
+         <div class="dropdown-content">
+                <a href="gpt.html">GPT</a>
+                <a href="#education">Gemini</a>
+            </div> 
+         </div> 
+        <button class="dropdown-btn">📬 聯絡我 </button>
+    </div>
+</div>
+
+<!-- 主內容區 -->
+<div class="main-content">
+  <h1>GPT網頁詢問合籍</h1>
+  <div class="container">
+    <a href="gpt網站/wu1.html"><div class="btn">設計 HTML 架構</div></a>
+    <a href="wu2.html"><div class="btn">網頁設計規範</div></a>
+    <a href="wu3.html"><div class="btn">建立網頁空間</div></a>
+    <a href="wu4.html"><div class="btn">vscode與github連結</div></a>
+    <a href="wu5.html"><div class="btn">div版型設計</div></a>
+    <a href="wu6.html"><div class="btn">python程式寫作</div></a>
+    <a href="wu7.html"><div class="btn">JS 模組化</div></a>
+    <a href="wu8.html"><div class="btn">首頁超連結處理</div></a>
+    <a href="wu9.html"><div class="btn">網頁優化</div></a>
+    <a href="wu10.html"><div class="btn">圖片網頁致中顯示</div></a>
+</div>
+</div>
+
 </body>
 </html>

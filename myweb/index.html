@@ -9,10 +9,9 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            /* 🔸 修改：移除 flex，因為側邊欄改成上方導覽列 */
         }
 
-        /* 🔸 新增：頂部導覽列樣式 */
+        /* 🔸 頂部導覽列樣式 */
         .navbar {
             display: flex;
             align-items: center;
@@ -33,26 +32,26 @@
         }
 
          /* 🔹 導覽列按鈕樣式 */
-    .nav-link,
-    .dropdown-btn {
-      background-color: #34495e;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-      text-decoration: none;
-      transition: background-color 0.3s;
-      display: inline-block;
-    }
+        .nav-link,
+        .dropdown-btn {
+            background-color: #34495e;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
 
-    .nav-link:hover,
-    .dropdown-btn:hover {
-      background-color: #3f7a47;
-    }
+        .nav-link:hover,
+        .dropdown-btn:hover {
+            background-color: #3f7a47;
+         }
 
-        /* 🔸 新增：下拉選單樣式 */
+        /* 🔸 下拉選單樣式 */
         .dropdown {
             position: relative;
             display: inline-block;
@@ -88,7 +87,6 @@
 
         /* 主內容區 */
         .main-content {
-            /* 🔸 修改：移除 margin-left，因為沒有側邊欄了 */
             padding: 20px;
             margin-top: 20px;
         }
@@ -152,7 +150,7 @@
 </head>
 <body>
 
-<!-- 🔸 修改開始：把側邊欄改成上方導覽列 -->
+<!-- 🔸 上方導覽列 -->
 <div class="navbar">
     <div class="nav-left">
        <a href="index.html" class="nav-link">📰 首頁</a>
