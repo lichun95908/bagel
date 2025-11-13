@@ -3,207 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>嘉祥bagel的網頁</title>
+    <title>建立網頁空間</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #91045b;
-            color: rgb(0, 255, 255);
-        }
-
-        /* 🔸 頂部導覽列樣式 */
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #2c3e50;
-            padding: 10px 20px;
-            color: white;
-            flex-wrap: wrap;
-        }
-
-        .navbar .nav-left {
-            display: flex;
-            justify-content: space-between;  /* ✅ 按鈕之間平均分散 */
-            align-items: center;
-            width: 100%;                     /* ✅ 讓分散效果生效 */
-            max-width: 700px;                /* ✅ 可自行調整整體寬度 */
-            gap: 15px;
-        }
-
-         /* 🔹 導覽列按鈕樣式 */
-        .nav-link,
-        .dropdown-btn {
-            background-color: #34495e;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            text-decoration: none;
-            transition: background-color 0.3s;
-            display: inline-flex;       /* 改成 inline-flex */
-            align-items: center;
-            justify-content: center;
-            width: 140px;               /* ✅ 統一寬度 */
-            box-sizing: border-box;     /* 包含 padding 在寬度內 */
-        }
-
-        .nav-link:hover,
-        .dropdown-btn:hover {
-            background-color: #3f7a47;
-         }
-
-        /* 🔸 下拉選單樣式 */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 45px;
-            left: 0;
-            background-color: #2c3e50;
-            min-width: 140px;
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            z-index: 1;
-        }
-
-        .dropdown-content a {
-            color: white;
-            padding: 10px 16px;
-            text-decoration: none;
-            display: block;
-            width: 100px;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #34495e;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-        /* 🔹 修改結束 */
-
-        /* 主內容區 */
-         .main-content {
+            background-color: #620d6d;
+            color: #333;
             text-align: center;
-            padding: 50px 20px;
         }
 
-        .main-content h1 {
-            font-size: 2em;
+        header {
+            background-color: #10c5dd;
+            color: rgb(240, 13, 13);
+            padding: 40px 0;
+            font-size: 36px;
             font-weight: bold;
-            text-align: center;
-            margin-bottom: 10px;
+            letter-spacing: 2px;
         }
 
-        .main-content p {
-            font-size: 1em;
-            margin-bottom: 40px;
+        main {
+            margin: 40px auto;
+            max-width: 800px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .container {
-            display: grid;
-            grid-template-columns:1fr;   
-            align-items: center;             /* 水平置中 */
-            gap: 15px;
-            justify-items: center;
-            max-width: 700px;
-            margin: 0 auto;
+        p {
+            font-size: 18px;
+            line-height: 1.8;
         }
 
         a {
+            display: inline-block;
+            margin-top: 20px;
             text-decoration: none;
-            width: 700px;
+            color: white;
+            background-color: #3498db;
+            padding: 10px 18px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
         }
 
-        .btn {
-            width: 700px;        /* 填滿 a 標籤 */
-            max-width: 700px;   /* 限制按鈕最大寬度 */
-            padding: 12px 0;     /* 上下內距小，左右不額外增加寬度 */
-            white-space: nowrap;         /* 文字不換行 */
-            overflow: hidden;            /* 防止超出 */
-            border-radius: 5px;
-            border: 2px solid #44eb11;
-            color: #7bff00;
-            background-color: transparent;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #fff;
-            color: #0983c9;
-            transform: scale(1.05);
-        }
-        /* 響應式設計 */
-        @media (max-width: 768px) {
-            /* 🔸 修改：頂部導覽列響應式處理 */
-            .navbar {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .dropdown-content {
-                position: relative;
-                top: 0;
-                box-shadow: none;
-            }
+        a:hover {
+            background-color: #2c80b4;
         }
     </style>
 </head>
 <body>
+    <header>建立網頁空間</header>
 
-<!-- 🔸 上方導覽列 -->
-<div class="navbar">
-    <div class="nav-left">
-       <a href="index.html" class="nav-link">📰 首頁</a>
-       <a href="wu_resume.html" class="nav-link">📋 履歷表</a>
-      
-        <div class="dropdown">
-        <button class="dropdown-btn">🌐 關於我 ▾</button>
-         <div class="dropdown-content">
-                <a href="#contact">自傳</a>
-                <a href="#education">愛車照</a>
-            </div> 
-        </div> 
+    <main>
+        <p>
+            方法一：使用免費平台（最快上線）這類方法適合剛開始玩網頁的人，不用買伺服器，只要有 GitHub 帳號或 Google 帳號就能上傳。 <br>
+        </p>
+        
+        <p>
+            1.GitHub Pages（最推薦）
 
-        <div class="dropdown">
-        <button class="dropdown-btn">📁 AI詢問集 ▾</button>
-         <div class="dropdown-content">
-                <a href="gpt.html">GPT</a>
-                <a href="#education">Gemini</a>
-            </div> 
-         </div> 
-        <button class="dropdown-btn">📬 聯絡我 </button>
-    </div>
-</div>
+            適合：靜態網站（HTML、CSS、JavaScript）。<br>
 
-<!-- 主內容區 -->
-<div class="main-content">
-  <h1>GPT網頁詢問合籍</h1>
-  <div class="container">
-    <a href="tip1.html"><div class="btn">設計 HTML 架構</div></a>
-    <a href="tip2.html"><div class="btn">網頁設計規範</div></a>
-    <a href="tip3.html"><div class="btn">建立網頁空間</div></a>
-    <a href="tip4.html"><div class="btn">vscode與github連結</div></a>
-    <a href="tip5.html"><div class="btn">div版型設計</div></a>
-    <a href="tip6.html"><div class="btn">python程式寫作</div></a>
-    <a href="tip7.html"><div class="btn">JS 模組化</div></a>
-    <a href="tip8.html"><div class="btn">首頁超連結處理</div></a>
-    <a href="tip9.html"><div class="btn">網頁優化</div></a>
-    <a href="tip10.html"><div class="btn">圖片網頁致中顯示</div></a>
-</div>
-</div>
+            2.Netlify / Vercel
+            適合：有一點前端框架（React、Vue、Next.js）的網站。<br>
 
+            3.Google Drive / Dropbox 靜態網站分享（較舊，不太推薦，Google 已關掉部分功能）。<br>
+            
+            方法二：自己架設（更多控制權）<br>
+           
+            1.買虛擬主機 + 網域<br>
+           
+            2.租 VPS（虛擬主機）<br>
+           
+            3.用自己的電腦當伺服器<br>
+            
+            最快上手建議
+            如果你只是想簡單上傳一個網頁，GitHub Pages 就能搞定，步驟簡單、完全免費。
+            未來如果要做更專業的（例如部落格、購物網站），再考慮買主機或用 Netlify/Vercel。
+        </p>
+
+
+        <a href="gpt.html">⬅ 回上頁</a>
+    </main>
 </body>
 </html>

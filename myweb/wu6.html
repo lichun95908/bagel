@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>python程式寫作</title>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #620d6d;
+            color: #333;
+            text-align: center;
+        }
+
+        header {
+            background-color: #10c5dd;
+            color: rgb(240, 13, 13);
+            padding: 40px 0;
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        main {
+            margin: 40px auto;
+            max-width: 800px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: white;
+            background-color: #3498db;
+            padding: 10px 18px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }
+
+        a:hover {
+            background-color: #2c80b4;
+        }
+    </style>
+</head>
+<body>
+    <header>python程式寫作</header>
+
+    <main>
+        <p>
+        提問:幫我使用python寫下面這問題的程式 <br>
+        
+        輸入打工時數 1～8小時：一小時200元 <br>
+       
+        9～10小時：一小時220元 <br>
+       
+        11～12小時：一小時280元
+        </p>
+
+        <p>
+           # 輸入打工時數 <br>
+
+           hours = int(input("請輸入打工時數："))
+        </p>
+        <p>
+            # 根據時數計算薪水
+        </p>
+        <p>
+            if 1 <= hours <= 8: <br>
+          pay = hours * 200 <br>
+          elif 9 <= hours <= 10: <br>
+              pay = (8 * 200) + (hours - 8) * 220 <br>
+          elif 11 <= hours <= 12: <br>
+              pay = (8 * 200) + (2 * 220) + (hours - 10) * 280 <br>
+          else: <br>
+              pay = 0 <br>
+              print("輸入時數不在1～12之間") <br>
+
+          # 顯示結果 <br>
+          if pay > 0:<br>
+              print(f"總薪水為：{pay} 元")
+
+        </p>
+
+        <a href="gpt.html">⬅ 回上頁</a>
+    </main>
+</body>
+</html>

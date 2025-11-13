@@ -1,15 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>網頁設計規範</title>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #620d6d;
+            color: #333;
+            text-align: center;
+        }
+
+        header {
+            background-color: #10c5dd;
+            color: rgb(240, 13, 13);
+            padding: 40px 0;
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        main {
+            margin: 40px auto;
+            max-width: 800px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: white;
+            background-color: #3498db;
+            padding: 10px 18px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }
+
+        a:hover {
+            background-color: #2c80b4;
+        }
+    </style>
 </head>
 <body>
-    <h1>My web</h1><br>
-   我的 Python Web
-    <h1>     </h1><br>
+    <header>網頁設計規範</header>
 
-    <a href="gpt.html">回上頁</a>
+    <main>
+        <p>
+            複製自己網頁的程式碼給GPT。 <br>
+           
+            把你原本的導覽列版面保留、 <br>
+           
+            然後把「主內容區」整合成「利用 ChatGPT 製作網頁的十個秘笈」那一頁的樣式後的完整版本<br>
+           
+            效果說明：<br>
+            
+            頂部導覽列（深藍灰色）完全保留。<br>
+            
+            主內容區改成亮藍底＋白字的「十個秘笈」網格樣式。 <br>
+           
+            所有按鈕會有 hover 放大與變色效果。 <br>
+           
+            完全響應式，手機上會自動排列成多列。
+        </p>
+        <a href="gpt.html">⬅ 回上頁</a>
+    </main>
 </body>
-</html> 
+</html>
