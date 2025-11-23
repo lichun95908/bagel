@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>顯示帳號密碼</title>
+
+<script>
+// 新增：這是新的 showInfo 函式，用來顯示帳號和密碼
+function showInfo() {
+    // 新增：取得帳號和密碼的值
+    let account = document.getElementById("john").value;
+    let password = document.getElementById("pw").value;
+
+    // 新增：跳出顯示帳號與密碼的小視窗
+    alert("您輸入的帳號是：" + account + "\n您輸入的密碼是：" + password);
+}
+</script>
+
+</head>
+<body>
+
+帳號：<input type="text" id="john"><br> <!-- 沒有修改的部分 -->
+密碼：<input type="password" id="pw"><br><br> <!-- 沒有修改的部分 -->
+
+<!-- 修改：這裡的 onclick 事件呼叫了 showInfo() 函式 -->
+<input type="button" value="送出" onclick="showInfo()"> <!-- 新增 onclick 屬性，將觸發 showInfo 函式 -->
+
+<a href="index.html" target="_blank">
+    <input type="button" value="回首頁">
+</a>
+
+</body>
+</html>
