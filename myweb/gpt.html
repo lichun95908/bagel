@@ -19,7 +19,7 @@
             align-items: center;
             justify-content: center;
             background-color: #2c3e50;
-            padding: 10px 20px;
+            padding: 20px 30px;
             color: white;
             flex-wrap: wrap;
         }
@@ -29,7 +29,7 @@
             justify-content: space-between;  /* ✅ 按鈕之間平均分散 */
             align-items: center;
             width: 100%;                     /* ✅ 讓分散效果生效 */
-            max-width: 700px;                /* ✅ 可自行調整整體寬度 */
+            max-width: 900px; /* ✅ 修改 1-1：增加最大寬度 */
             gap: 15px;
         }
 
@@ -50,6 +50,7 @@
             justify-content: center;
             width: 140px;               /* ✅ 統一寬度 */
             box-sizing: border-box;     /* 包含 padding 在寬度內 */
+            white-space: nowrap; /* ✅ 修改 2-1：強制文字不換行 */
         }
 
         .nav-link:hover,
@@ -69,7 +70,6 @@
             top: 45px;
             left: 0;
             background-color: #2c3e50;
-            min-width: 140px;
             box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
             border-radius: 5px;
             z-index: 1;
@@ -80,7 +80,7 @@
             padding: 10px 16px;
             text-decoration: none;
             display: block;
-            width: 100px;
+            white-space: nowrap; /* ✅ 修改 2-2：確保下拉菜單文字不換行 */
         }
 
         .dropdown-content a:hover {
@@ -90,7 +90,7 @@
         .dropdown:hover .dropdown-content {
             display: block;
         }
-        /* 🔹 修改結束 */
+        
 
         /* 主內容區 */
          .main-content {
@@ -168,10 +168,16 @@
     <div class="nav-left">
        <a href="index.html" class="nav-link">📰 首頁</a>
        <a href="wu_resume.html" class="nav-link">📋 履歷表</a>
-      
+       <div class="dropdown">
+        <button class="dropdown-btn">📁作業區 ▾</button>
+            <div class="dropdown-content">
+                <a href="test.html">📁帳號輸入</a>
+                <a href="randon.html">📁排序跟隨機抽號</a>
+            </div> 
+        </div> 
         <div class="dropdown">
         <button class="dropdown-btn">🌐 關於我 ▾</button>
-         <div class="dropdown-content">
+            <div class="dropdown-content">
                 <a href="#contact">自傳</a>
                 <a href="#education">愛車照</a>
             </div> 
@@ -184,7 +190,7 @@
                 <a href="#education">Gemini</a>
             </div> 
          </div> 
-        <button class="dropdown-btn">📬 聯絡我 </button>
+        <button class="dropdown-btn">📬 聯絡我 ▾</button>
     </div>
 </div>
 

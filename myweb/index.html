@@ -17,21 +17,21 @@
             align-items: center;
             justify-content: center;
             background-color: #2c3e50;
-            padding: 10px 20px;
+            padding: 20px 30px;
             color: white;
             flex-wrap: wrap;
         }
 
         .navbar .nav-left {
             display: flex;
-            justify-content: space-between;  /* ✅ 按鈕之間平均分散 */
+            justify-content: space-between;
             align-items: center;
-            width: 100%;                     /* ✅ 讓分散效果生效 */
-            max-width: 700px;                /* ✅ 可自行調整整體寬度 */
+            width: 100%;
+            max-width: 900px; /* ✅ 增加最大寬度，為按鈕提供更多空間 */
             gap: 15px;
         }
 
-         /* 🔹 導覽列按鈕樣式 */
+        /* 🔹 導覽列按鈕樣式 */
         .nav-link,
         .dropdown-btn {
             background-color: #34495e;
@@ -44,12 +44,14 @@
             text-decoration: none;
             transition: background-color 0.3s;
             display: inline-block;
+            /* ✅ 關鍵修改：不允許按鈕內文字換行 */
+            white-space: nowrap; 
         }
 
         .nav-link:hover,
         .dropdown-btn:hover {
             background-color: #3f7a47;
-         }
+        }
 
         /* 🔸 下拉選單樣式 */
         .dropdown {
@@ -63,7 +65,7 @@
             top: 45px;
             left: 0;
             background-color: #2c3e50;
-            min-width: 140px;
+            /* ✅ 移除 min-width 讓內容決定寬度 */
             box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
             border-radius: 5px;
             z-index: 1;
@@ -74,7 +76,9 @@
             padding: 10px 16px;
             text-decoration: none;
             display: block;
-            width: 100px;
+            /* ✅ 移除固定寬度，讓連結內容決定下拉菜單的寬度 */
+            /* width: 100px; */ 
+            white-space: nowrap; /* 確保下拉菜單文字不換行 */
         }
 
         .dropdown-content a:hover {
@@ -84,7 +88,7 @@
         .dropdown:hover .dropdown-content {
             display: block;
         }
-        /* 🔹 修改結束 */
+       
 
         /* 主內容區 */
         .main-content {
@@ -138,51 +142,67 @@
             /* 🔸 修改：頂部導覽列響應式處理 */
             .navbar {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch; /* 讓按鈕在小螢幕上拉伸 */
             }
 
+            .navbar .nav-left {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .nav-link,
+            .dropdown-btn {
+                width: 100%; /* 小螢幕上讓按鈕全寬 */
+                box-sizing: border-box;
+                text-align: center;
+            }
+            
             .dropdown-content {
                 position: relative;
                 top: 0;
                 box-shadow: none;
+                width: 100%; /* 小螢幕上讓下拉菜單全寬 */
+            }
+            
+            .dropdown-content a {
+                width: auto; /* 在小螢幕上自動調整寬度 */
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
 
-<!-- 🔸 上方導覽列 -->
 <div class="navbar">
     <div class="nav-left">
        <a href="index.html" class="nav-link">📰 首頁</a>
        <a href="wu_resume.html" class="nav-link">📋 履歷表</a>
        <div class="dropdown">
-        <button class="dropdown-btn">📁作業區 ▾</button>
-            <div class="dropdown-content">
-                <a href="test.html">📁帳號輸入</a>
-                <a href="randon.html">📁排序跟隨機抽號</a>
-            </div> 
-        </div> 
-        <div class="dropdown">
-        <button class="dropdown-btn">🌐 關於我 ▾</button>
-            <div class="dropdown-content">
-                <a href="#contact">自傳</a>
-                <a href="#education">愛車照</a>
-            </div> 
-        </div> 
+         <button class="dropdown-btn">📁作業區 ▾</button>
+           <div class="dropdown-content">
+               <a href="test.html">📁帳號輸入</a>
+               <a href="randon.html">📁排序跟隨機抽號</a>
+           </div> 
+       </div> 
+       <div class="dropdown">
+         <button class="dropdown-btn">🌐 關於我 ▾</button>
+           <div class="dropdown-content">
+               <a href="#contact">自傳</a>
+               <a href="#education">愛車照</a>
+           </div> 
+       </div> 
 
-        <div class="dropdown">
-        <button class="dropdown-btn">📁 AI詢問集 ▾</button>
-         <div class="dropdown-content">
-                <a href="gpt.html">GPT</a>
-                <a href="#education">Gemini</a>
-            </div> 
-         </div> 
+       <div class="dropdown">
+         <button class="dropdown-btn">📁 AI詢問集 ▾</button>
+          <div class="dropdown-content">
+               <a href="gpt.html">GPT</a>
+               <a href="#education">Gemini</a>
+           </div> 
+        </div> 
         <button class="dropdown-btn">📬 聯絡我 ▾</button>
     </div>
 </div>
 
-<!-- 主內容區 -->
 <div class="main-content">
     <div class="container">
         <h1>歡迎來到我的網頁</h1>
