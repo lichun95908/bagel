@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打散與抽取</title>
+    <style>
+        /* --- CSS 核心修訂：隱藏輸入框箭頭 --- */
+        /* 針對 Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* 針對 Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        /* ---------------------------------- */
+
+
+        /* --- 頁面整體風格 (沿用您的設定) --- */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #03d5e4; 
+            font-family: "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+            color: #555;
+        }
+
+        /* --- 卡片主體設計 --- */
+        .card {
+            background: rgb(255, 255, 255);
+            width: 500px; 
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
+            text-align: center;
+            position: relative;
+        }
+
+        /* --- 標題區域 --- */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .icon-box {
+            background-color: #ff0000;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .description {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* 輸入群組樣式 */
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: #FAFAFA;
+            border: 2px dashed #EEE;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        /* 數字輸入框樣式 */
+        #max-num {
+            padding: 8px 10px;
+            border: 1px solid #CCC;
+            border-radius: 6px;
+            font-size: 16px;
+            text-align: right;
+            max-width: 100px;
+            margin-left: 10px;
+        }
+        
+        /* --- 顯示數字的區域 --- */
+        .display-area {
+            background-color: #FAFAFA;
+            border: 2px dashed #EEE;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: left;
+            font-size: 16px;
+            letter-spacing: 2px;
+            word-wrap: break-word; 
+            color: #666;
+            display: flex;
+            align-items: flex-start;
+            min-height: 60px;
+        }
+
+        /* 抽獎結果特別樣式 */
+        #lucky-draw-area {
+            background: #ffe6cc; 
+            border: 2px solid #ff9933;
+            margin-top: 30px;
+            padding: 20px 15px;
+            margin-bottom: 30px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #8B7D6B;
+            margin-right: 15px;
+            min-width: 70px;
+        }
+
+        .numbers {
+            flex-grow: 1; 
+            font-size: 18px;
+            color: #999; 
+            line-height: 1.6;
+        }
+        
+        /* 抽獎號碼放大加粗 */
+        #lucky-draw-nums {
+            color: #ff0000; 
+            font-weight: 900;
+            font-size: 28px;
+            letter-spacing: 10px;
+        }
+
+        /* 打散前/打散後數字顏色 */
+        #origin-nums, #result-nums {
+            font-weight: normal;
+            color: #555;
+            font-size: 16px;
+        }
+
+        /* --- 按鈕通用基礎樣式 --- */
+        .action-btn {
+            border: none;
+            padding: 12px 40px;
+            border-radius: 50px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px 10px 0 10px; /* 給予間距 */
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none; /* 移除超連結底線 */
+            line-height: 1; /* 確保文字居中 */
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        /* --- 1. 洗牌按鈕 (橘色漸層) --- */
+        .btn-shuffle {
+            background: linear-gradient(to right, #FFC075, #FF8C42);
+            box-shadow: 0 4px 15px rgba(255, 140, 66, 0.4);
+        }
+
+        .btn-shuffle:hover {
+            box-shadow: 0 6px 20px rgba(255, 140, 66, 0.5);
+        }
+
+        /* --- 2. 回首頁按鈕 (藍色漸層) --- */
+        .btn-back {
+            background: linear-gradient(to right, #61A3FF, #007bff);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        .btn-back:hover {
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.5);
+        }
+
+        /* --- 底部小字 --- */
+        .footer-note {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #AAA;
+        }
+        
+        /* --- 簡單的動畫效果 Class --- */
+        .pop-anim {
+            animation: pop 0.3s ease-out;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.9); opacity: 0.5; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header">
+            <div class="icon-box">🔃</div> <h2>數字洗牌與六位數抽取</h2>
+        </div>
+        
+        <p class="description">
+            請輸入最大值 N (N 必須 ≥ 6)，程式將進行洗牌，並從中隨機抽取 6 個不重複的號碼。
+        </p>
+        
+        <div class="input-group">
+            <span class="label">輸入最大值 N:</span>
+            <input type="number" id="max-num" value="49" min="6" max="100">
+        </div>
+
+        <div>
+            <button class="action-btn btn-shuffle" onclick="startShuffle()">
+                <span class="btn-icon">🎲</span> 開始洗牌並抽取
+            </button>
+        </div>
+        
+        <div class="display-area" style="margin-top: 25px;">
+            <span class="label">打散前排序 :</span>
+            <span class="numbers" id="origin-nums">請輸入 N 後點擊按鈕</span>
+        </div>
+
+        <div class="display-area">
+            <span class="label">打散後排序 :</span>
+            <span class="numbers" id="result-nums">? ? ? ? ...</span>
+        </div>
+
+        <div class="display-area" id="lucky-draw-area">
+            <span class="label">隨機抽中號碼 :</span>
+            <span class="numbers" id="lucky-draw-nums">? ? ? ? ? ?</span>
+        </div>
+
+        <div class="footer-note">
+            Fisher-Yates 洗牌法保證了洗牌的公平性。
+        </div>
+        
+        <div>
+            <a href="index.html" class="action-btn btn-back">
+                <span class="btn-icon">🏠</span> 回首頁
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // 設定抽取數字的數量
+        const DRAW_COUNT = 6;
+        
+        // 頁面載入時初始化顯示
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const defaultN = parseInt(document.getElementById("max-num").value);
+            // 初始化 "打散前" 區塊的序列
+            generateSequence(defaultN, "origin-nums");
+        });
+
+        // 函數：將 1 到 N 的序列轉換為字串顯示
+        function generateSequence(N, elementId) {
+            let s_origin = "";
+            for (let i = 1; i <= N; i++) {
+                s_origin += i + " ";
+            }
+            document.getElementById(elementId).innerText = s_origin.trim();
+        }
+        
+        // 函數：將陣列轉換為字串顯示 (用於抽中號碼和打散後序列)
+        function arrayToString(arr, count) {
+            let s = "";
+            const limit = count || arr.length;
+            for (let i = 0; i < limit; i++) {
+                s += arr[i] + " ";
+            }
+            return s.trim();
+        }
+
+        function startShuffle() {
+            // 1. 取得使用者輸入的數字 N
+            const N_input = document.getElementById("max-num").value;
+            const N = parseInt(N_input);
+
+            // 檢查輸入是否有效，且 N 必須大於等於 6
+            if (isNaN(N) || N < DRAW_COUNT || N > 100) {
+                alert(`請輸入一個大於或等於 ${DRAW_COUNT} 且小於 100 的有效整數 N！`);
+                return;
+            }
+
+            // 2. 初始化陣列 (從 1 到 N)
+            let a = [];
+            for (let i = 0; i < N; i++) {
+                a[i] = i + 1;
+            }
+            // 取得打散前序列字串
+            const originString = arrayToString(a);
+
+            // **步驟：** 更新「打散前」的數字顯示
+            document.getElementById("origin-nums").innerText = originString;
+            
+            // 3. 核心演算法：Fisher-Yates Shuffle 
+            const arrayLength = a.length;
+            
+            for (let i = 0; i < arrayLength - 1; i++) {
+                
+                // 產生隨機數 r: 範圍是 0 到 arrayLength - 1 - i 之間
+                let r = Math.floor(Math.random() * (arrayLength - i));
+                
+                // 動態決定要交換的目標索引
+                let swapIndex = arrayLength - 1 - i;
+                
+                // 交換邏輯 
+                let c = a[swapIndex];    
+                a[swapIndex] = a[r];      
+                a[r] = c;                 
+            }
+            // 取得打散後序列字串
+            const shuffledString = arrayToString(a);
+
+            // 4. 抽取結果
+            const luckyNumbers = a.slice(0, DRAW_COUNT); 
+            const resultString = arrayToString(luckyNumbers); // 取得抽中號碼的字串表示
+
+            // 5. 更新畫面並播放動畫
+            
+            // 更新「打散後」（完整序列）
+            let resultElement = document.getElementById("result-nums");
+            resultElement.innerText = shuffledString;
+
+            // **Alert 1: 合併顯示打散前與打散後**
+            alert(
+                `--- 結果 ---\n\n` +
+                `【打散前排序】 \n` +
+                `${originString}\n\n` +
+                `【打散後排序】 \n` +
+                `${shuffledString}`
+            );
+            
+            // 更新「抽中號碼」
+            let drawElement = document.getElementById("lucky-draw-nums");
+            
+            // 移除動畫 class 再加回去，確保每次都能觸發動畫
+            drawElement.classList.remove("pop-anim");
+            void drawElement.offsetWidth; 
+            
+            // 將抽取出的 6 個數字顯示出來
+            drawElement.innerText = resultString;
+            drawElement.classList.add("pop-anim");
+
+            // **Alert 2: 隨機抽中號碼 (最終結果)**
+            alert(`--- 隨機抽中號碼 ---\n\n恭喜您！號碼是：\n\n${resultString}`);
+        }
+    </script>
+</body>
+</html>
