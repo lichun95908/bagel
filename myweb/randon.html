@@ -92,7 +92,7 @@
         }
 
         /* 數字輸入框樣式 */
-        #max-num {
+        #max-num, #draw-count {
             padding: 8px 10px;
             border: 1px solid #CCC;
             border-radius: 6px;
@@ -230,16 +230,21 @@
 
     <div class="card">
         <div class="header">
-            <div class="icon-box">🔃</div> <h2>數字洗牌與六位數抽取</h2>
+            <div class="icon-box">🔃</div> <h2>數字洗牌與隨機數字抽取</h2>
         </div>
         
         <p class="description">
-            請輸入最大值 N (N 必須 ≥ 6)，程式將進行洗牌，並從中隨機抽取 6 個不重複的號碼。
+            請輸入最大值 (必須>=抽取個數)抽取個數，並選擇要抽取的數字個數。
         </p>
         
         <div class="input-group">
             <span class="label">輸入最大值 N:</span>
             <input type="number" id="max-num" value="49" min="6" max="100">
+        </div>
+        
+        <div class="input-group">
+            <span class="label">抽取數字個數:</span>
+            <input type="number" id="draw-count" value="6" min="1" max="max-num">
         </div>
 
         <div>
@@ -263,6 +268,16 @@
             <span class="numbers" id="lucky-draw-nums">? ? ? ? ? ?</span>
         </div>
 
+        <div class="display-area">
+            <span class="label">最大值 :</span>
+            <span class="numbers" id="max-value">? (第 ? 個)</span>
+        </div>
+
+        <div class="display-area">
+            <span class="label">最小值 :</span>
+            <span class="numbers" id="min-value">? (第 ? 個)</span>
+        </div>
+
         <div class="footer-note">
             Fisher-Yates 洗牌法保證了洗牌的公平性。
         </div>
@@ -275,17 +290,13 @@
     </div>
 
     <script>
-        // 設定抽取數字的數量
-        const DRAW_COUNT = 6;
-        
-        // 頁面載入時初始化顯示
+        const DRAW_COUNT = "max-num";
+
         document.addEventListener('DOMContentLoaded', (event) => {
             const defaultN = parseInt(document.getElementById("max-num").value);
-            // 初始化 "打散前" 區塊的序列
             generateSequence(defaultN, "origin-nums");
         });
 
-        // 函數：將 1 到 N 的序列轉換為字串顯示
         function generateSequence(N, elementId) {
             let s_origin = "";
             for (let i = 1; i <= N; i++) {
@@ -293,8 +304,7 @@
             }
             document.getElementById(elementId).innerText = s_origin.trim();
         }
-        
-        // 函數：將陣列轉換為字串顯示 (用於抽中號碼和打散後序列)
+
         function arrayToString(arr, count) {
             let s = "";
             const limit = count || arr.length;
@@ -305,78 +315,68 @@
         }
 
         function startShuffle() {
-            // 1. 取得使用者輸入的數字 N
             const N_input = document.getElementById("max-num").value;
+            const drawCount = document.getElementById("draw-count").value;
             const N = parseInt(N_input);
+            const draw = parseInt(drawCount);
 
-            // 檢查輸入是否有效，且 N 必須大於等於 6
             if (isNaN(N) || N < DRAW_COUNT || N > 100) {
                 alert(`請輸入一個大於或等於 ${DRAW_COUNT} 且小於 100 的有效整數 N！`);
                 return;
             }
 
-            // 2. 初始化陣列 (從 1 到 N)
+            if (isNaN(draw) || draw < 1 || draw > DRAW_COUNT) {
+                alert("請選擇 1 到 最大值範圍 之間的有效數字個數！");
+                return;
+            }
+
+            if (draw > N) {
+                alert(`抽取的數字個數不能大於您輸入的最大值 ！`);
+                return;
+            }
+
             let a = [];
             for (let i = 0; i < N; i++) {
                 a[i] = i + 1;
             }
-            // 取得打散前序列字串
-            const originString = arrayToString(a);
 
-            // **步驟：** 更新「打散前」的數字顯示
+            const originString = arrayToString(a);
             document.getElementById("origin-nums").innerText = originString;
-            
-            // 3. 核心演算法：Fisher-Yates Shuffle 
-            const arrayLength = a.length;
-            
-            for (let i = 0; i < arrayLength - 1; i++) {
-                
-                // 產生隨機數 r: 範圍是 0 到 arrayLength - 1 - i 之間
-                let r = Math.floor(Math.random() * (arrayLength - i));
-                
-                // 動態決定要交換的目標索引
-                let swapIndex = arrayLength - 1 - i;
-                
-                // 交換邏輯 
+
+            // Fisher-Yates 洗牌演算法
+            for (let i = 0; i < a.length - 1; i++) {
+                let r = Math.floor(Math.random() * (a.length - i));
+                let swapIndex = a.length - 1 - i;
                 let c = a[swapIndex];    
                 a[swapIndex] = a[r];      
                 a[r] = c;                 
             }
-            // 取得打散後序列字串
+
             const shuffledString = arrayToString(a);
+            document.getElementById("result-nums").innerText = shuffledString;
 
-            // 4. 抽取結果
-            const luckyNumbers = a.slice(0, DRAW_COUNT); 
-            const resultString = arrayToString(luckyNumbers); // 取得抽中號碼的字串表示
-
-            // 5. 更新畫面並播放動畫
-            
-            // 更新「打散後」（完整序列）
-            let resultElement = document.getElementById("result-nums");
-            resultElement.innerText = shuffledString;
-
-            // **Alert 1: 合併顯示打散前與打散後**
             alert(
-                `--- 結果 ---\n\n` +
-                `【打散前排序】 \n` +
-                `${originString}\n\n` +
-                `【打散後排序】 \n` +
-                `${shuffledString}`
+                `--- 打散前排序 ---\n\n${originString}\n\n--- 打散後排序 ---\n\n${shuffledString}`
             );
-            
-            // 更新「抽中號碼」
-            let drawElement = document.getElementById("lucky-draw-nums");
-            
-            // 移除動畫 class 再加回去，確保每次都能觸發動畫
-            drawElement.classList.remove("pop-anim");
-            void drawElement.offsetWidth; 
-            
-            // 將抽取出的 6 個數字顯示出來
-            drawElement.innerText = resultString;
-            drawElement.classList.add("pop-anim");
 
-            // **Alert 2: 隨機抽中號碼 (最終結果)**
-            alert(`--- 隨機抽中號碼 ---\n\n恭喜您！號碼是：\n\n${resultString}`);
+            const luckyNumbers = a.slice(0, draw);
+            const resultString = arrayToString(luckyNumbers);
+
+            let minValue = Math.min(...luckyNumbers);
+            let maxValue = Math.max(...luckyNumbers);
+            let minIndex = luckyNumbers.indexOf(minValue) + 1;
+            let maxIndex = luckyNumbers.indexOf(maxValue) + 1;
+
+            alert(
+                `--- 隨機抽中號碼 ---\n\n` +
+                `恭喜您！號碼是：\n\n${resultString}\n\n` +
+                `最大值: ${maxValue} (第 ${maxIndex} 個)\n` +
+                `最小值: ${minValue} (第 ${minIndex} 個)`
+            );
+
+            document.getElementById("lucky-draw-nums").innerText = resultString;
+            document.getElementById("max-value").innerText = `${maxValue} (第 ${maxIndex} 個)`;
+            document.getElementById("min-value").innerText = `${minValue} (第 ${minIndex} 個)`;
         }
     </script>
 </body>
