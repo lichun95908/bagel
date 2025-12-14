@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>由小到大彩球排序</title>
+    <title>樂透彩球模擬器</title>
     <style>
         /* --- 基礎設定 --- */
         body {
@@ -93,6 +93,7 @@
             background-color: #ccc;
         }
 
+        /* --- 按鈕通用樣式 --- */
         .btn {
             border: none;
             padding: 10px 24px;
@@ -106,19 +107,47 @@
             align-items: center;
             gap: 5px;
             white-space: nowrap;
+            text-decoration: none; /* 移除超連結底線 */
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn:active {
+            transform: translateY(0);
         }
 
+        /* 功能按鈕 */
         .btn-primary {
             background-color: #0d6efd;
             box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
         }
-        .btn-primary:hover { transform: translateY(-2px); background-color: #0b5ed7; }
-        .btn-primary:active { transform: translateY(0); }
+        .btn-primary:hover { background-color: #0b5ed7; }
 
         .btn-reset {
             background-color: #6c757d;
         }
         .btn-reset:hover { background-color: #5c636a; }
+
+        /* 回首頁按鈕 (藍色漸層) */
+        .btn-back {
+            background: linear-gradient(135deg, #61A3FF, #007bff);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            padding: 12px 40px; /* 稍微大一點 */
+            font-size: 16px;
+        }
+        .btn-back:hover {
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+        }
+
+        /* --- 底部區域 --- */
+        .footer-area {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            display: flex;
+            justify-content: center;
+        }
 
         /* --- 視覺化區域 --- */
         .visual-area {
@@ -145,12 +174,12 @@
             padding-left: 10px;
         }
 
-        /* --- 各區塊特定樣式 (依序) --- */
+        /* --- 各區塊特定樣式 --- */
         
-        /* 1. 最終結果 (最上面，強調顯示) */
+        /* 1. 最終結果 */
         .section-sorted {
-            background-color: #fff8e1; /* 亮黃色背景 */
-            border: 2px solid #ffc107; /* 金黃色邊框 */
+            background-color: #fff8e1; 
+            border: 2px solid #ffc107; 
             text-align: center;
             box-shadow: 0 4px 15px rgba(255, 193, 7, 0.15); 
         }
@@ -160,14 +189,14 @@
             font-size: 20px; 
         }
 
-        /* 2. 抽取紀錄 (淡黃) */
+        /* 2. 抽取紀錄 */
         .section-raw {
             background-color: #fcf6e6; 
             border: 1px solid #fae5b0;
         }
         .section-raw .panel-label { border-left-color: #f39c12; color: #d35400; }
 
-        /* 3. 打散前 (低調灰) */
+        /* 3. 打散前 */
         .section-origin {
             background-color: #f8f9fa;
             border: 1px dashed #ccc;
@@ -175,7 +204,7 @@
         }
         .section-origin .panel-label { border-left-color: #adb5bd; }
 
-        /* 4. 打散後 (標準) */
+        /* 4. 打散後 */
         .section-shuffled {
             background-color: #fff;
             border: 1px solid #d1d9e6;
@@ -192,7 +221,6 @@
             min-height: 40px;
         }
 
-        /* 抽取結果置中 */
         .section-raw .balls-container,
         .section-sorted .balls-container {
             justify-content: center;
@@ -219,7 +247,6 @@
             user-select: none;
         }
 
-        /* 大球樣式 (用於抽取結果) */
         .ball.large {
             width: 55px;
             height: 55px;
@@ -245,7 +272,7 @@
     <div class="container">
         <div class="header-panel">
             <div class="title-group">
-                <h2>🎱 由小到大排序</h2>
+                <h2>🎱 樂透彩球洗牌機</h2>
             </div>
             
             <div class="controls">
@@ -297,6 +324,12 @@
             </div>
             
         </div>
+
+        <div class="footer-area">
+            <a href="index.html" class="btn btn-back">
+                <span>🏠</span> 回首頁
+            </a>
+        </div>
     </div>
 
     <script>
@@ -336,7 +369,7 @@
 
             const arr = Array.from({length: N}, (_, i) => i + 1);
             
-            // 初始狀態顯示：只有打散前有東西，其他等待
+            // 初始狀態顯示
             renderBalls(arr, "origin-container", false, false);
             
             document.getElementById("shuffled-container").innerHTML = '<span style="color:#aaa; font-size:14px;">等待洗牌...</span>';
@@ -349,32 +382,20 @@
             if (!input) return;
             const { N, K } = input;
 
-            // 1. 準備資料
             let originalArr = Array.from({length: N}, (_, i) => i + 1);
             let shuffledArr = [...originalArr];
 
-            // 2. 洗牌
             for (let i = shuffledArr.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]];
             }
 
-            // 3. 抽取
             const rawDraw = shuffledArr.slice(0, K);
             const sortedDraw = [...rawDraw].sort((a, b) => a - b);
 
-            // 4. 渲染 (依序對應 HTML 的位置)
-            
-            // 區域 1: 最終結果 (大球，開動畫)
             renderBalls(sortedDraw, "sorted-draw-container", true, true);
-
-            // 區域 2: 抽取紀錄 (大球，開動畫)
             renderBalls(rawDraw, "raw-draw-container", true, true);
-
-            // 區域 3: 打散前 (靜態)
             renderBalls(originalArr, "origin-container", false, false); 
-            
-            // 區域 4: 打散後 (開動畫)
             renderBalls(shuffledArr, "shuffled-container", true, false);
         }
 
@@ -393,7 +414,6 @@
 
                 if (animate) {
                     let delayBase = isLarge ? 0.1 : 0.015;
-                    // 如果是大球且數量多，加快速度以免等太久
                     if (isLarge && numbers.length > 10) delayBase = 0.05;
                     ball.style.animationDelay = `${index * delayBase}s`;
                 }
