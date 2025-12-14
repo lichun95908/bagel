@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>由小到大彩球排序</title>
+    <style>
+        /* --- 基礎設定 --- */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            font-family: "Microsoft JhengHei", sans-serif;
+            color: #333;
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+
+        .container {
+            background: #fff;
+            width: 90%;
+            max-width: 1000px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* --- 頂部標題與控制列 --- */
+        .header-panel {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 100;
+        }
+
+        .title-group h2 {
+            margin: 0;
+            font-size: 24px;
+            color: #2c3e50;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            color: #555;
+            font-size: 15px;
+        }
+
+        input[type="number"] {
+            padding: 8px 5px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 55px;
+            text-align: center;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        input[type="number"]:focus {
+            border-color: #0d6efd;
+        }
+
+        .divider {
+            width: 1px;
+            height: 20px;
+            background-color: #ccc;
+        }
+
+        .btn {
+            border: none;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background-color: #0d6efd;
+            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); background-color: #0b5ed7; }
+        .btn-primary:active { transform: translateY(0); }
+
+        .btn-reset {
+            background-color: #6c757d;
+        }
+        .btn-reset:hover { background-color: #5c636a; }
+
+        /* --- 視覺化區域 --- */
+        .visual-area {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .panel-box {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            background-color: #fafafa;
+            transition: background-color 0.3s;
+        }
+        
+        .panel-label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #555;
+            font-size: 16px;
+            border-left: 4px solid #aaa;
+            padding-left: 10px;
+        }
+
+        /* --- 各區塊特定樣式 (依序) --- */
+        
+        /* 1. 最終結果 (最上面，強調顯示) */
+        .section-sorted {
+            background-color: #fff8e1; /* 亮黃色背景 */
+            border: 2px solid #ffc107; /* 金黃色邊框 */
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.15); 
+        }
+        .section-sorted .panel-label { 
+            border-left-color: #e74c3c; 
+            color: #c0392b; 
+            font-size: 20px; 
+        }
+
+        /* 2. 抽取紀錄 (淡黃) */
+        .section-raw {
+            background-color: #fcf6e6; 
+            border: 1px solid #fae5b0;
+        }
+        .section-raw .panel-label { border-left-color: #f39c12; color: #d35400; }
+
+        /* 3. 打散前 (低調灰) */
+        .section-origin {
+            background-color: #f8f9fa;
+            border: 1px dashed #ccc;
+            opacity: 0.8;
+        }
+        .section-origin .panel-label { border-left-color: #adb5bd; }
+
+        /* 4. 打散後 (標準) */
+        .section-shuffled {
+            background-color: #fff;
+            border: 1px solid #d1d9e6;
+        }
+        .section-shuffled .panel-label { border-left-color: #0d6efd; color: #004085; }
+
+
+        /* --- 彩球容器 --- */
+        .balls-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: flex-start;
+            min-height: 40px;
+        }
+
+        /* 抽取結果置中 */
+        .section-raw .balls-container,
+        .section-sorted .balls-container {
+            justify-content: center;
+            gap: 15px;
+        }
+
+        /* --- 彩球 CSS 3D --- */
+        .ball {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 13px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.8), rgba(255,255,255,0) 25%),
+                        radial-gradient(circle at 50% 50%, var(--bg-color), #333 120%);
+            box-shadow: 2px 4px 8px rgba(0,0,0,0.3), inset -2px -2px 5px rgba(0,0,0,0.2);
+            position: relative;
+            cursor: default;
+            user-select: none;
+        }
+
+        /* 大球樣式 (用於抽取結果) */
+        .ball.large {
+            width: 55px;
+            height: 55px;
+            font-size: 22px;
+            box-shadow: 3px 6px 12px rgba(0,0,0,0.4);
+        }
+
+        /* --- 動畫 --- */
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0; 
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-panel">
+            <div class="title-group">
+                <h2>🎱 由小到大排序</h2>
+            </div>
+            
+            <div class="controls">
+                <div class="input-group">
+                    <label for="max-num">總球數 (N):</label>
+                    <input type="number" id="max-num" value="49" min="1" max="100">
+                </div>
+                
+                <div class="divider"></div>
+
+                <div class="input-group">
+                    <label for="draw-count">抽取數 (k):</label>
+                    <input type="number" id="draw-count" value="6" min="1" max="100">
+                </div>
+
+                <button class="btn btn-primary" onclick="runSimulation()">
+                    <span>🎲</span> 開始洗牌
+                </button>
+                <button class="btn btn-reset" onclick="initPage()">
+                    <span>🔄</span> 重置
+                </button>
+            </div>
+        </div>
+
+        <div class="visual-area">
+            
+            <div class="panel-box section-sorted">
+                <span class="panel-label">🏆 1. 最終結果 (由小到大)</span>
+                <div class="balls-container" id="sorted-draw-container">
+                    </div>
+            </div>
+
+            <div class="panel-box section-raw">
+                <span class="panel-label">📝 2. 抽取紀錄 (依抽出順序)</span>
+                <div class="balls-container" id="raw-draw-container">
+                    </div>
+            </div>
+
+            <div class="panel-box section-origin">
+                <span class="panel-label">3. 打散前 (1 ~ N)</span>
+                <div class="balls-container" id="origin-container">
+                    </div>
+            </div>
+
+            <div class="panel-box section-shuffled">
+                <span class="panel-label">4. 打散後 (完整亂數)</span>
+                <div class="balls-container" id="shuffled-container">
+                    </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', initPage);
+
+        function getInputs() {
+            const nVal = document.getElementById("max-num").value;
+            const kVal = document.getElementById("draw-count").value;
+            
+            const N = parseInt(nVal);
+            const K = parseInt(kVal);
+
+            if (isNaN(N) || isNaN(K)) {
+                alert("請輸入有效的數字！");
+                return null;
+            }
+            if (N > 100) {
+                alert("總球數 N 建議不要超過 100");
+                return null;
+            }
+            if (K < 1) {
+                alert("抽取數量 k 至少需要 1 顆");
+                return null;
+            }
+            if (N < K) {
+                alert(`錯誤：總球數 N (${N}) 不能小於 抽取數量 k (${K})！`);
+                return null;
+            }
+
+            return { N, K };
+        }
+
+        function initPage() {
+            const input = getInputs();
+            if (!input) return;
+            const { N, K } = input;
+
+            const arr = Array.from({length: N}, (_, i) => i + 1);
+            
+            // 初始狀態顯示：只有打散前有東西，其他等待
+            renderBalls(arr, "origin-container", false, false);
+            
+            document.getElementById("shuffled-container").innerHTML = '<span style="color:#aaa; font-size:14px;">等待洗牌...</span>';
+            document.getElementById("raw-draw-container").innerHTML = '<span style="color:#aaa;">-</span>';
+            document.getElementById("sorted-draw-container").innerHTML = '<span style="color:#aaa;">請點擊開始</span>';
+        }
+
+        function runSimulation() {
+            const input = getInputs();
+            if (!input) return;
+            const { N, K } = input;
+
+            // 1. 準備資料
+            let originalArr = Array.from({length: N}, (_, i) => i + 1);
+            let shuffledArr = [...originalArr];
+
+            // 2. 洗牌
+            for (let i = shuffledArr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]];
+            }
+
+            // 3. 抽取
+            const rawDraw = shuffledArr.slice(0, K);
+            const sortedDraw = [...rawDraw].sort((a, b) => a - b);
+
+            // 4. 渲染 (依序對應 HTML 的位置)
+            
+            // 區域 1: 最終結果 (大球，開動畫)
+            renderBalls(sortedDraw, "sorted-draw-container", true, true);
+
+            // 區域 2: 抽取紀錄 (大球，開動畫)
+            renderBalls(rawDraw, "raw-draw-container", true, true);
+
+            // 區域 3: 打散前 (靜態)
+            renderBalls(originalArr, "origin-container", false, false); 
+            
+            // 區域 4: 打散後 (開動畫)
+            renderBalls(shuffledArr, "shuffled-container", true, false);
+        }
+
+        function renderBalls(numbers, containerId, animate = false, isLarge = false) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ""; 
+
+            numbers.forEach((num, index) => {
+                const ball = document.createElement("div");
+                ball.className = "ball";
+                if (isLarge) ball.classList.add("large");
+                if (animate) ball.classList.add("animate-pop");
+                
+                ball.textContent = num;
+                ball.style.setProperty("--bg-color", getBallColor(num));
+
+                if (animate) {
+                    let delayBase = isLarge ? 0.1 : 0.015;
+                    // 如果是大球且數量多，加快速度以免等太久
+                    if (isLarge && numbers.length > 10) delayBase = 0.05;
+                    ball.style.animationDelay = `${index * delayBase}s`;
+                }
+
+                container.appendChild(ball);
+            });
+        }
+
+        function getBallColor(num) {
+            const colors = [
+                "#e74c3c", // 紅 (1-10)
+                "#f39c12", // 橘 (11-20)
+                "#27ae60", // 綠 (21-30)
+                "#2980b9", // 藍 (31-40)
+                "#8e44ad", // 紫 (41-50)
+                "#c0392b", // 深紅
+                "#16a085", // 青
+                "#2c3e50", // 深灰
+                "#d35400", // 磚紅
+                "#7f8c8d"  // 灰
+            ];
+            const colorIndex = Math.floor((num - 1) / 10) % colors.length;
+            return colors[colorIndex];
+        }
+    </script>
+</body>
+</html>
