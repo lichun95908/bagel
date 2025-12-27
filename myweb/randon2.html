@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>終極密碼 - 完整對戰版</title>
+    <style>
+        :root { --primary: #3498db; --success: #2ecc71; --error: #e74c3c; --bg: #f0f4f8; --dark: #4697e9; }
+        body { font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+        
+        .container { background: white; padding: 2.5rem; border-radius: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); width: 95%; max-width: 850px; display: grid; grid-template-columns: 320px 1fr; gap: 30px; position: relative; }
+        
+        /* 控制面板 */
+        .settings-panel { display: flex; flex-direction: column; gap: 12px; border-right: 1px solid #eee; padding-right: 20px; text-align: left; }
+        label { font-size: 0.85rem; color: #64748b; font-weight: bold; }
+        input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; box-sizing: border-box; font-size: 1rem; }
+        
+        /* 3D 骰子舞台 */
+        .display-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+        .scene { width: 180px; height: 180px; perspective: 1000px; margin: 30px; }
+        .dice { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); transform: rotateX(-20deg) rotateY(20deg); }
+        .dice-face { position: absolute; width: 180px; height: 180px; background: white; border: 4px solid #333; display: flex; align-items: center; justify-content: center; border-radius: 20px; backface-visibility: hidden; box-shadow: inset 0 0 15px rgba(0,0,0,0.05); }
+        
+        /* 骰子面設定 */
+        .front  { transform: rotateY(0deg) translateZ(90px); }
+        .right  { transform: rotateY(90deg) translateZ(90px); color: var(--error); background: #fff5f5; font-size: 3rem; font-weight: 900; }
+        .left   { transform: rotateY(-90deg) translateZ(90px); color: var(--primary); background: #f0f7ff; font-size: 3rem; font-weight: 900; }
+        .top    { transform: rotateX(90deg) translateZ(90px); color: var(--success); font-size: 3rem; font-weight: 900; }
+        .bottom { transform: rotateX(-90deg) translateZ(90px); background: #eee; }
+        .back   { transform: rotateY(180deg) translateZ(90px); }
+
+        /* 數位捲軸 */
+        .roll-container { display: flex; font-size: 3.5rem; font-weight: 900; color: var(--dark); height: 1.2em; overflow: hidden; }
+        .digit-col { display: flex; flex-direction: column; transition: transform 0.8s ease-in-out; }
+        .digit-col span { height: 1.2em; display: flex; align-items: center; justify-content: center; width: 0.7em; }
+
+        /* 介面元素 */
+        .range-info { font-size: 1.5rem; font-weight: 800; color: #64748b; margin-bottom: 5px; }
+        button { padding: 12px; border: none; border-radius: 12px; cursor: pointer; color: white; font-weight: bold; width: 100%; transition: 0.3s; }
+        .btn-start { background: var(--dark); }
+        .btn-user { background: var(--primary); }
+        .btn-ai { background: #9b59b6; }
+        button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* 頁尾連結按鈕 */
+        .footer-nav { margin-top: 30px; width: 100%; display: flex; justify-content: center; }
+        .btn-home { background: var(--dark); width: auto; min-width: 150px; padding: 15px 30px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 50px; }
+        .btn-home:hover { background: #5cccee; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(253, 71, 71, 0.2); }
+
+        /* 旋轉動畫 */
+        @keyframes spin { from { transform: rotateX(0) rotateY(0); } to { transform: rotateX(360deg) rotateY(720deg); } }
+        .dice.spinning { animation: spin 0.4s linear infinite; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="settings-panel">
+        <h2 style="margin:0 0 5px 0;">遊戲設定</h2>
+        <label>最大範圍</label>
+        <input type="number" id="maxIn" value="100">
+        <label>指定答案 (留空隨機)</label>
+        <input type="number" id="ansIn" placeholder="Secret Number">
+        <button class="btn-start" onclick="initGame()">套用設定 / 重置遊戲</button>
+        
+        <hr style="width:100%; border:0; border-top:1px solid #eee; margin:15px 0;">
+        
+        <label>手動挑戰</label>
+        <input type="number" id="guessIn" placeholder="輸入你想猜的數字">
+        <button class="btn-user" id="userBtn" onclick="userGuess()" disabled>確定猜測</button>
+        <button class="btn-ai" id="aiBtn" onclick="aiAuto()" disabled style="margin-top:10px;">讓 AI 自動破解</button>
+        <div id="statusMsg" style="margin-top:15px; font-weight:bold; text-align:center; color: var(--dark);">請設定範圍後開始</div>
+    </div>
+
+    <div class="display-panel">
+        <div class="range-info" id="rangeTxt">READY?</div>
+        
+        <div class="scene">
+            <div class="dice" id="dice">
+                <div class="dice-face front">
+                    <div class="roll-container" id="guessRoll"></div>
+                </div>
+                <div class="dice-face right">小</div>
+                <div class="dice-face left">大</div>
+                <div class="dice-face top">中</div>
+                <div class="dice-face bottom">?</div>
+                <div class="dice-face back">?</div>
+            </div>
+        </div>
+
+        <div style="color: #94a3b8; font-weight: bold; font-size: 0.9rem; letter-spacing: 2px;">STATUS: STANDBY</div>
+    </div>
+</div>
+
+<div class="footer-nav">
+    <a href="index.html" class="btn-home">
+        <span>🏠</span> 回到首頁
+    </a>
+</div>
+
+<script>
+    let left, right, answer, isOver = false;
+
+    // 初始化數位捲軸
+    function buildRoll(val) {
+        const container = document.getElementById('guessRoll');
+        container.innerHTML = '';
+        val.toString().split('').forEach((d, i) => {
+            const col = document.createElement('div');
+            col.className = 'digit-col';
+            col.id = `col-${i}`;
+            for (let n = 0; n <= 9; n++) col.innerHTML += `<span>${n}</span>`;
+            container.appendChild(col);
+            moveDigit(i, d);
+        });
+    }
+
+    function moveDigit(idx, val) {
+        const el = document.getElementById(`col-${idx}`);
+        if (el) el.style.transform = `translateY(-${val * 1.2}em)`;
+    }
+
+    function updateRoll(val) {
+        const digits = val.toString().split('');
+        const container = document.getElementById('guessRoll');
+        if (digits.length !== container.children.length) {
+            buildRoll(val);
+        } else {
+            digits.forEach((d, i) => moveDigit(i, d));
+        }
+    }
+
+    // 初始化遊戲
+    function initGame() {
+        left = 1;
+        right = parseInt(document.getElementById('maxIn').value) || 100;
+        const custom = document.getElementById('ansIn').value;
+        answer = custom ? parseInt(custom) : Math.floor(Math.random() * right) + 1;
+        
+        if (answer > right || answer < 1) { alert("答案超出設定範圍！"); return; }
+
+        isOver = false;
+        document.getElementById('rangeTxt').innerText = `${left} ~ ${right}`;
+        document.getElementById('statusMsg').innerText = "戰場已就緒！";
+        document.getElementById('statusMsg').style.color = "var(--dark)";
+        document.getElementById('userBtn').disabled = false;
+        document.getElementById('aiBtn').disabled = false;
+        document.getElementById('dice').style.transform = 'rotateX(-20deg) rotateY(20deg)';
+        buildRoll(0);
+    }
+
+    // 核心猜測處理
+    async function handleGuess(guess) {
+        if (isOver) return;
+        const dice = document.getElementById('dice');
+        
+        // 1. 骰子瘋狂旋轉
+        dice.classList.add('spinning');
+        document.getElementById('statusMsg').innerText = "運算中...";
+        
+        await new Promise(r => setTimeout(r, 600)); 
+        
+        // 2. 回到正面
+        dice.classList.remove('spinning');
+        dice.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        
+        // 3. 骰子正面滾動數字
+        updateRoll(guess);
+        await new Promise(r => setTimeout(r, 800));
+
+        // 4. 根據比對結果翻轉顯示結果
+        if (guess === answer) {
+            dice.style.transform = 'rotateX(-90deg)'; // TOP: 中
+            document.getElementById('statusMsg').innerText = "🎉 破解成功！答案是 " + answer;
+            document.getElementById('statusMsg').style.color = "var(--success)";
+            isOver = true;
+            return true;
+        } else if (guess < answer) {
+            left = guess + 1;
+            dice.style.transform = 'rotateY(90deg)'; // LEFT: 大
+            document.getElementById('statusMsg').innerText = "太小了！答案更大 ⬆️";
+        } else {
+            right = guess - 1;
+            dice.style.transform = 'rotateY(-90deg)'; // RIGHT: 小
+            document.getElementById('statusMsg').innerText = "太大了！答案更小 ⬇️";
+        }
+        
+        document.getElementById('rangeTxt').innerText = `${left} ~ ${right}`;
+        return false;
+    }
+
+    async function userGuess() {
+        const val = parseInt(document.getElementById('guessIn').value);
+        if (isNaN(val) || val < left || val > right) { alert("無效範圍！"); return; }
+        document.getElementById('userBtn').disabled = true;
+        await handleGuess(val);
+        if (!isOver) document.getElementById('userBtn').disabled = false;
+        document.getElementById('guessIn').value = "";
+    }
+
+    async function aiAuto() {
+        document.getElementById('userBtn').disabled = true;
+        document.getElementById('aiBtn').disabled = true;
+        while (!isOver) {
+            const mid = Math.floor((left + right) / 2);
+            let res = await handleGuess(mid);
+            if (res) break;
+            await new Promise(r => setTimeout(r, 1000));
+        }
+    }
+</script>
+
+</body>
+</html>
