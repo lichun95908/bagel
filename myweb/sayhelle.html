@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery Say Hello 範例</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+
+    <h1>sayhello測試</h1>
+    
+    <button id="helloBtn">點我跟我打招呼！</button>
+    
+    <h2 id="message" style="color: blue;"></h2>
+
+    <script>
+        $(document).ready(function(){
+            // 當按鈕被點擊時觸發
+            $("#helloBtn").click(function(){
+                // 1. 彈出警告視窗
+                alert("Hello World!");
+
+                // 2. 在網頁元素中插入文字
+                $("#message").text("你好！hello。");
+                
+                // 3. 增加一點動畫效果 (淡入)
+                $("#message").hide().fadeIn(1000);
+            });
+        });
+    </script>
+    <a href="index.html" >
+        <input type="button" value="回首頁">
+    </a>
+</body>
+</html>

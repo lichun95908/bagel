@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動式二元搜索教學</title>
+    <style>
+        :root { --primary: #3498db; --success: #2ecc71; --error: #e74c3c; --neutral: #bdc3c7; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 40px; }
+        .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 800px; }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 25px; }
+        
+        /* 輸入區樣式 */
+        .controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; justify-content: center; }
+        input { padding: 12px; border: 2px solid #ddd; border-radius: 8px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); }
+        button { padding: 12px 24px; cursor: pointer; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; transition: 0.2s; }
+        button:hover { background: #2980b9; transform: translateY(-2px); }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* 數組視覺化 */
+        .array-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; min-height: 60px; }
+        .node { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; background: white; border: 2px solid var(--neutral); border-radius: 8px; font-weight: bold; transition: all 0.4s ease; position: relative; }
+        .node.active { border-color: var(--primary); background: #ebf5fb; transform: scale(1.1); box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3); }
+        .node.target { background: var(--success); color: white; border-color: var(--success); }
+        .node.dimmed { opacity: 0.2; transform: scale(0.9); }
+        .node.checking { background: #f1c40f; color: white; border-color: #f1c40f; animation: pulse 0.6s infinite alternate; }
+
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.2); } }
+
+        /* 日誌區 */
+        #log { padding: 15px; border-radius: 8px; background: #f8f9fa; border-left: 5px solid var(--primary); min-height: 60px; line-height: 1.6; }
+        .step-msg { margin-bottom: 8px; border-bottom: 1px dashed #eee; padding-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>🔍 二元搜索視覺化演示</h2>
+    
+    <div class="controls">
+        <input type="text" id="userInput" placeholder="輸入數字，用逗號隔開 (例: 10, 5, 88, 2)" style="width: 300px;">
+        <button onclick="setupArray()">更新數組並排序</button>
+    </div>
+
+    <div class="controls">
+        <input type="number" id="targetInput" placeholder="要找哪個數字？">
+        <button id="searchBtn" onclick="startBinarySearch()">開始動畫搜尋</button>
+    </div>
+
+    <div id="arrayContainer" class="array-container"></div>
+    <div id="log">請先輸入數組或直接使用預設值開始。</div>
+</div>
+
+<script>
+    let data = [12, 25, 33, 47, 50, 61, 78, 82, 89, 95]; // 預設資料
+    
+    function renderArray(activeRange = {l: 0, r: data.length - 1}, mid = -1, foundIdx = -1) {
+        const container = document.getElementById('arrayContainer');
+        container.innerHTML = '';
+        
+        data.forEach((val, i) => {
+            const node = document.createElement('div');
+            node.className = 'node';
+            node.innerText = val;
+            
+            if (foundIdx === i) {
+                node.classList.add('target');
+            } else if (i === mid) {
+                node.classList.add('checking');
+            } else if (i < activeRange.l || i > activeRange.r) {
+                node.classList.add('dimmed');
+            } else {
+                node.classList.add('active');
+            }
+            container.appendChild(node);
+        });
+    }
+
+    function setupArray() {
+        const input = document.getElementById('userInput').value;
+        if (input.trim() !== "") {
+            data = input.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+            data.sort((a, b) => a - b);
+        }
+        renderArray();
+        document.getElementById('log').innerText = "數組已更新並排序。請輸入目標值並點擊搜尋。";
+    }
+
+    // 核心動畫搜尋邏輯
+    async function startBinarySearch() {
+        const target = parseInt(document.getElementById('targetInput').value);
+        const log = document.getElementById('log');
+        const btn = document.getElementById('searchBtn');
+
+        if (isNaN(target)) {
+            log.innerHTML = "<span style='color:red'>請輸入有效的目標數字！</span>";
+            return;
+        }
+
+        btn.disabled = true;
+        log.innerHTML = "<b>開始搜尋...</b><br>";
+
+        let left = 0;
+        let right = data.length - 1;
+        let found = false;
+
+        while (left <= right) {
+            let mid = Math.floor((left + right) / 2);
+            
+            // 視覺化更新
+            renderArray({l: left, r: right}, mid);
+            log.innerHTML += `<div class="step-msg">範圍: [${left} 到 ${right}]，檢查中間索引 ${mid} (值: ${data[mid]})</div>`;
+            log.scrollTop = log.scrollHeight;
+
+            await new Promise(r => setTimeout(r, 1000)); // 停頓 1 秒看動畫
+
+            if (data[mid] === target) {
+                renderArray({l: left, r: right}, -1, mid);
+                log.innerHTML += `<b style="color:green">✨ 找到了！${target} 位於索引 ${mid}。</b>`;
+                found = true;
+                break;
+            } else if (data[mid] < target) {
+                log.innerHTML += `<div class="step-msg">${data[mid]} 太小了，捨棄左半部。</div>`;
+                left = mid + 1;
+            } else {
+                log.innerHTML += `<div class="step-msg">${data[mid]} 太大了，捨棄右半部。</div>`;
+                right = mid - 1;
+            }
+            
+            await new Promise(r => setTimeout(r, 500));
+        }
+
+        if (!found) {
+            renderArray({l: -1, r: -1});
+            log.innerHTML += `<b style="color:red">❌ 搜尋結束，找不到數字 ${target}。</b>`;
+        }
+        btn.disabled = false;
+    }
+
+    // 初始化顯示
+    renderArray();
+</script>
+
+</body>
+</html>
